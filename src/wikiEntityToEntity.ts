@@ -1,7 +1,7 @@
 
 // const debug = require('debug')('models-builder');
 import { WikiEntity, WikidataPropertyValue } from 'wiki-entity';
-import { Entity, EntityTypes } from 'entitizer.models';
+import { Entity, EntityTypes, EntityTypeValue } from 'entitizer.models';
 import { getEntityType } from './getEntityType';
 import { getEntityType as getEntityInstanceType } from './getEntityInstanceType';
 import * as _ from 'lodash';
@@ -9,15 +9,22 @@ import { getEntityData } from './getEntityData';
 import { getEntityCC2 } from './getEntityCountry';
 const atonic = require('atonic');
 
-export function wikiEntityToEntity(wikiEntity: WikiEntity, lang: string): Entity {
+export type WikiEntityToEntityOptions = {
+    defaultType?: EntityTypeValue
+}
+
+export function wikiEntityToEntity(wikiEntity: WikiEntity, lang: string, options?: WikiEntityToEntityOptions): Entity {
     // debug('wikiEntityToEntity:', lang, wikiEntity);
+    options = options || {};
     const entity: Entity = {};
     entity.lang = lang.toLowerCase();
     entity.wikiId = wikiEntity.id;
     entity.type = getEntityType(wikiEntity);
     if (!entity.type) {
         entity.type = getEntityInstanceType(wikiEntity);
-        entity.type = entity.type || EntityTypes.CONCEPT;
+        if (!entity.type && options.defaultType) {
+            entity.type = options.defaultType;
+        }
     }
     if (wikiEntity.types) {
         entity.types = _.uniq(wikiEntity.types.filter(item => !/:(Thing|Agent)$/.test(item)));
