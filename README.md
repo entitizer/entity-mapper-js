@@ -1,19 +1,19 @@
-# entitizer.models-builder
+# entitizer.entity-mapper
 
-Entitizer models builder module.
+Entitizer entity mapper module.
 
 ## Usage
 
 ```
 import { getEntities } from 'wiki-entity';
-import { EntityBuilder } from 'entitizer.models-builder';
+import { fromWikiEntity } from 'entitizer.entity-mapper';
 
 const language = 'en';
 // get Europe by title
 getEntities({ language, titles: 'Europe' })
     .then(entities => {
         const wikiEntity = entities[0];
-        // convert WikiEntity to an Entitizer Entity model
-        const entity = EntityBuilder.fromWikiEntity(wikiEntity, language);
+        // convert WikiEntity to an Entitizer Entity
+        const entity = fromWikiEntity(wikiEntity, language);
     });
 ```

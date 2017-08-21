@@ -1,9 +1,10 @@
 
-import { EntityTypeValue, IPlainObject, EntityTypes } from 'entitizer.models'
-import { WikiEntity } from 'wiki-entity'
-const ENTITY_TYPES: IPlainObject<string[]> = require('../data/entity_types.json');
+import { EntityType } from 'entitizer.entities';
+import { WikiEntity } from 'wiki-entity';
+import { PlainObject } from '../utils';
+const ENTITY_TYPES: PlainObject<string[]> = require('../../data/entity_types.json');
 
-export function getEntityType(wikiEntity: WikiEntity): EntityTypeValue {
+export function getEntityType(wikiEntity: WikiEntity): EntityType {
     if (!wikiEntity.claims) {
         return null;
     }
@@ -17,7 +18,7 @@ export function getEntityType(wikiEntity: WikiEntity): EntityTypeValue {
 }
 
 
-function getTypeByProp(wikiEntity: WikiEntity, prop: string): EntityTypeValue {
+function getTypeByProp(wikiEntity: WikiEntity, prop: string): EntityType {
     const instanceOf = wikiEntity.claims[prop];
 
     if (!instanceOf) {
@@ -28,23 +29,23 @@ function getTypeByProp(wikiEntity: WikiEntity, prop: string): EntityTypeValue {
     for (var i = 0; i < instanceOf.values.length; i++) {
         // value is Event
         if (~ENTITY_TYPES.E.indexOf(instanceOf.values[i].value)) {
-            return EntityTypes.EVENT;
+            return EntityType.E;
         }
         // value is Person
         if (~ENTITY_TYPES.H.indexOf(instanceOf.values[i].value)) {
-            return EntityTypes.PERSON;
+            return EntityType.H;
         }
         // value is Org
         if (~ENTITY_TYPES.O.indexOf(instanceOf.values[i].value)) {
-            return EntityTypes.ORGANIZATION;
+            return EntityType.O;
         }
         // value is Location
         if (~ENTITY_TYPES.L.indexOf(instanceOf.values[i].value)) {
-            return EntityTypes.LOCATION;
+            return EntityType.L;
         }
         // value is Product
         if (~ENTITY_TYPES.P.indexOf(instanceOf.values[i].value)) {
-            return EntityTypes.PRODUCT;
+            return EntityType.P;
         }
     }
 

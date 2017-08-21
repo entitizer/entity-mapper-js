@@ -1,8 +1,9 @@
 
 import { WikiEntity } from 'wiki-entity';
-import { Entity, EntityTypeValue, EntityData, IPlainObject } from 'entitizer.models';
+import { Entity, EntityType, EntityData } from 'entitizer.entities';
+import { PlainObject } from '../utils';
 
-export function getEntityData(wikiEntity: WikiEntity, type: EntityTypeValue): EntityData {
+export function getEntityData(wikiEntity: WikiEntity, type: EntityType): EntityData {
     if (!wikiEntity.claims || !type) {
         return null;
     }
@@ -26,7 +27,7 @@ export function getEntityData(wikiEntity: WikiEntity, type: EntityTypeValue): En
                 if (value.label && v.value !== value.label) {
                     v.label = value.label;
                 }
-                data[key].push(v);
+                data[key].push(v.value);
             });
         }
     }
@@ -34,7 +35,7 @@ export function getEntityData(wikiEntity: WikiEntity, type: EntityTypeValue): En
     return data;
 }
 
-const ENTITY_DATA_PROPS: IPlainObject<string[]> = {
+const ENTITY_DATA_PROPS: PlainObject<string[]> = {
     // Person
     H: [
         // instance of
@@ -108,6 +109,10 @@ const ENTITY_DATA_PROPS: IPlainObject<string[]> = {
         'P41',
         // GeoNames ID
         'P1566',
+        // ISO 3166-2 code
+        'P300',
+        // FIPS 10-4 (countries and regions)
+        'P901',
         // postal code
         'P281',
         // capital
@@ -268,12 +273,12 @@ const ENTITY_DATA_PROPS: IPlainObject<string[]> = {
     ]
 };
 
-const PROP_PARSERS = {
+const PROP_PARSERS: PlainObject<(val: string) => string> = {
     // P570: dateParser,
     // P569: dateParser
 };
 
-const PROP_LIMITS = {
+const PROP_LIMITS: PlainObject<number> = {
     P17: 1,
     P18: 1,
     P1376: 1,

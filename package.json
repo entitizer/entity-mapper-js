@@ -1,7 +1,7 @@
 {
-  "name": "entitizer.models-builder",
-  "version": "0.1.12",
-  "description": "Entitizer models builder",
+  "name": "entitizer.entity-mapper",
+  "version": "0.1.0",
+  "description": "Entitizer entity mapper",
   "main": "./lib/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
@@ -18,20 +18,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/entitizer/models-builder-js.git"
+    "url": "git+https://github.com/entitizer/entity-mapper-js.git"
   },
   "keywords": [
     "entitizer",
-    "models",
-    "builder",
-    "models-builder"
+    "entity",
+    "mapper",
+    "entity-mapperr"
   ],
   "author": "Dumitru Cantea",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/entitizer/models-builder-js/issues"
+    "url": "https://github.com/entitizer/entity-mapper-js/issues"
   },
-  "homepage": "https://github.com/entitizer/models-builder-js#readme",
+  "homepage": "https://github.com/entitizer/entity-mapper-js#readme",
   "devDependencies": {
     "@types/node": "^7.0.5",
     "bluebird": "^3.5.0",
@@ -42,9 +42,6 @@
     "typescript": "^2.2.1"
   },
   "dependencies": {
-    "atonic": "^1.0.4",
-    "entitizer.models": "^0.1.5",
-    "lodash": "^4.17.4",
     "wiki-entity": "^0.1.3"
   }
 }

@@ -1,16 +1,15 @@
 
 // const debug = require('debug')('models-builder');
 import { WikiEntity, WikidataPropertyValue } from 'wiki-entity';
-import { Entity, EntityTypes, EntityTypeValue } from 'entitizer.models';
+import { Entity, EntityType } from 'entitizer.entities';
 import { getEntityType } from './getEntityType';
 import { getEntityType as getEntityInstanceType } from './getEntityInstanceType';
-import * as _ from 'lodash';
 import { getEntityData } from './getEntityData';
 import { getEntityCC2 } from './getEntityCountry';
-const atonic = require('atonic');
+import { uniq } from '../utils';
 
 export type WikiEntityToEntityOptions = {
-    defaultType?: EntityTypeValue
+    defaultType?: EntityType
 }
 
 export function wikiEntityToEntity(wikiEntity: WikiEntity, lang: string, options?: WikiEntityToEntityOptions): Entity {
@@ -27,8 +26,8 @@ export function wikiEntityToEntity(wikiEntity: WikiEntity, lang: string, options
         }
     }
     if (wikiEntity.types) {
-        entity.types = _.uniq(wikiEntity.types.filter(item => !/:(Thing|Agent)$/.test(item)));
-        entity.types = _.uniq(entity.types.map(type => type.split(':')[1]));
+        entity.types = uniq(wikiEntity.types.filter(item => !/:(Thing|Agent)$/.test(item)));
+        entity.types = uniq(entity.types.map(type => type.split(':')[1]));
     }
     entity.name = wikiEntity.label;
     entity.description = wikiEntity.description;
@@ -37,16 +36,16 @@ export function wikiEntityToEntity(wikiEntity: WikiEntity, lang: string, options
     entity.rank = 1;
     if (wikiEntity.sitelinks) {
         entity.wikiTitle = wikiEntity.sitelinks[lang];
-        if (lang !== 'en') {
-            entity.enWikiTitle = wikiEntity.sitelinks.en;
-        }
+        // if (lang !== 'en') {
+        //     entity.enWikiTitle = wikiEntity.sitelinks.en;
+        // }
         entity.rank += Object.keys(wikiEntity.sitelinks).length;
     }
 
     entity.aliases = wikiEntity.aliases || [];
     entity.aliases = entity.aliases.concat(wikiEntity.redirects || []);
     if (entity.aliases.length) {
-        entity.aliases = _.uniqBy(entity.aliases, al => atonic(al.toLowerCase()));
+        // entity.aliases = _.uniqBy(entity.aliases, al => atonic(al.toLowerCase()));
         entity.rank += entity.aliases.length / 2;
     }
 
@@ -54,13 +53,13 @@ export function wikiEntityToEntity(wikiEntity: WikiEntity, lang: string, options
         const ids = Object.keys(wikiEntity.claims);
         if (ids.length) {
             // detect wikiImage
-            for (var i = 0; i < ids.length; i++) {
-                const img: WikidataPropertyValue = _.find(wikiEntity.claims[ids[i]].values, { datatype: 'commonsMedia' });
-                if (img) {
-                    entity.wikiImage = img.value;
-                    break;
-                }
-            }
+            // for (var i = 0; i < ids.length; i++) {
+            //     const img: WikidataPropertyValue = _.find(wikiEntity.claims[ids[i]].values, { datatype: 'commonsMedia' });
+            //     if (img) {
+            //         entity.wikiImage = img.value;
+            //         break;
+            //     }
+            // }
             entity.data = getEntityData(wikiEntity, entity.type);
         }
 
@@ -71,7 +70,7 @@ export function wikiEntityToEntity(wikiEntity: WikiEntity, lang: string, options
         entity.rank += ids.length;
     }
 
-    entity.rank = parseInt(entity.rank.toString());
+    entity.rank = Math.round(entity.rank);
 
     return entity;
 }

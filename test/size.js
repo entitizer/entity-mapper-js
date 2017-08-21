@@ -1,7 +1,7 @@
 'use strict';
 
 const sizeof = require('object-sizeof');
-const EntityBuilder = require('../lib').EntityBuilder;
+const fromWikiEntity = require('../lib').fromWikiEntity;
 const wikiEntity = require('wiki-entity');
 const assert = require('assert');
 
@@ -12,7 +12,7 @@ describe('object size', function () {
             .then(function (entities) {
                 assert.equal(1, entities.length);
                 const wikiEntity = entities[0];
-                const entity = EntityBuilder.fromWikiEntity(wikiEntity, lang);
+                const entity = fromWikiEntity(wikiEntity, lang);
                 const wikiEntitySize = sizeof(wikiEntity);
                 const entitySize = sizeof(entity);
 
