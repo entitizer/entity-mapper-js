@@ -39,7 +39,7 @@
     "mocha": "^3.2.0",
     "object-sizeof": "^1.1.1",
     "request": "^2.81.0",
-    "typescript": "^2.2.1"
+    "typescript": "^2.4.2"
   },
   "dependencies": {
     "wiki-entity": "^0.1.3"

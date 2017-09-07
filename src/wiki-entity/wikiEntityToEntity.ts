@@ -60,7 +60,7 @@ export function wikiEntityToEntity(wikiEntity: WikiEntity, lang: string, options
             //         break;
             //     }
             // }
-            entity.data = getEntityData(wikiEntity, entity.type);
+            entity.data = getEntityData(wikiEntity);
         }
 
         if (entity.type) {
