@@ -36,17 +36,14 @@ export function wikiEntityToEntity(wikiEntity: WikiEntity, lang: string, options
     entity.rank = 1;
     if (wikiEntity.sitelinks) {
         entity.wikiTitle = wikiEntity.sitelinks[lang];
-        // if (lang !== 'en') {
-        //     entity.enWikiTitle = wikiEntity.sitelinks.en;
-        // }
-        entity.rank += Object.keys(wikiEntity.sitelinks).length;
+        entity.rank += (Object.keys(wikiEntity.sitelinks).length * 5);
     }
 
     entity.aliases = wikiEntity.aliases || [];
     entity.aliases = entity.aliases.concat(wikiEntity.redirects || []);
     if (entity.aliases.length) {
         // entity.aliases = _.uniqBy(entity.aliases, al => atonic(al.toLowerCase()));
-        entity.rank += entity.aliases.length / 2;
+        entity.rank += entity.aliases.length;
     }
 
     if (wikiEntity.claims) {
