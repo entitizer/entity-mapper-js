@@ -10,9 +10,9 @@ const DATA_MAP = {
     // Events: Event
     E: { list: ['Q1656682'], deep: 3 },
     // Persons: Human
-    H: { list: ['Q5'], deep: 2 },
-    // Locations: Location (Q17334923), political teritory entity (Q1048835)
-    L: { list: ['Q17334923', 'Q1048835'], deep: 3 },
+    H: { list: ['Q5'], deep: 3 },
+    // Locations: Location (Q17334923), political teritory entity (Q1048835), administrative territorial entity (Q56061)
+    L: { list: ['Q17334923', 'Q1048835', 'Q56061'], deep: 4 },
     // Organizations: Organization (Q43229)
     O: { list: ['Q43229'], deep: 4 },
     // Works: work (Q386724), intellectual work (Q15621286), creative work (Q17537576), fictitious entity (Q14897293), fictional character (Q95074), mythical character (Q4271324), publication (Q732577)
