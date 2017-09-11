@@ -25,27 +25,14 @@ function getTypeByProp(wikiEntity: WikiEntity, prop: string): EntityType {
         return null;
     }
 
-    // for every value of instanceOf:
-    for (var i = 0; i < instanceOf.values.length; i++) {
-        // value is Event
-        if (~ENTITY_TYPES.E.indexOf(instanceOf.values[i].value)) {
-            return EntityType.E;
-        }
-        // value is Person
-        if (~ENTITY_TYPES.H.indexOf(instanceOf.values[i].value)) {
-            return EntityType.H;
-        }
-        // value is Org
-        if (~ENTITY_TYPES.O.indexOf(instanceOf.values[i].value)) {
-            return EntityType.O;
-        }
-        // value is Location
-        if (~ENTITY_TYPES.L.indexOf(instanceOf.values[i].value)) {
-            return EntityType.L;
-        }
-        // value is Product
-        if (~ENTITY_TYPES.P.indexOf(instanceOf.values[i].value)) {
-            return EntityType.P;
+    const types = ['E', 'H', 'L', 'O', 'P'];
+    for (let i = 0; i < types.length; i++) {
+        const type = types[i];
+        for (let j = 0; j < instanceOf.values.length; j++) {
+            const value = instanceOf.values[j].value;
+            if (~ENTITY_TYPES[type].indexOf(value)) {
+                return <EntityType>type;
+            }
         }
     }
 

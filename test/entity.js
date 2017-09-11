@@ -157,4 +157,15 @@ describe('EntityBuilder', function () {
                 // console.log(entity.toJSON());
             });
     });
+
+    it('Scotland', function () {
+        const lang = 'en';
+        return wikiEntity.getEntities({ language: lang, ids: 'Q22', claims: 'node', types: true })
+            .then(function (entities) {
+                assert.equal(1, entities.length);
+                const entity = fromWikiEntity(entities[0], lang);
+                assert.equal('Scotland', entity.name);
+                assert.equal('L', entity.type);
+            });
+    });
 });
