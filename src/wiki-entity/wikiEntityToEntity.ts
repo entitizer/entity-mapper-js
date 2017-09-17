@@ -27,7 +27,7 @@ export function wikiEntityToEntity(wikiEntity: WikiEntity, lang: string, options
     }
     if (wikiEntity.types) {
         entity.types = uniq(wikiEntity.types.filter(item => !/:(Thing|Agent)$/.test(item)));
-        entity.types = uniq(entity.types.map(type => type.split(':')[1]));
+        // entity.types = uniq(entity.types.map(type => type.split(':')[1]));
     }
     entity.name = wikiEntity.label;
     entity.description = wikiEntity.description;
@@ -45,6 +45,8 @@ export function wikiEntityToEntity(wikiEntity: WikiEntity, lang: string, options
         // entity.aliases = _.uniqBy(entity.aliases, al => atonic(al.toLowerCase()));
         entity.rank += entity.aliases.length;
     }
+
+    entity.aliases = uniq(entity.aliases);
 
     if (wikiEntity.claims) {
         const ids = Object.keys(wikiEntity.claims);

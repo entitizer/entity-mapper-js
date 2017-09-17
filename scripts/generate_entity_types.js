@@ -7,8 +7,8 @@ const fs = require('fs');
 const path = require('path');
 
 const DATA_MAP = {
-    // Events: Event
-    E: { list: ['Q1656682'], deep: 3 },
+    // Events: Event, 
+    E: { list: ['Q1656682', 'Q1190554'], deep: 3 },
     // Persons: Human
     H: { list: ['Q5'], deep: 3 },
     // Locations: Location (Q17334923), political teritory entity (Q1048835), administrative territorial entity (Q56061)
