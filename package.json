@@ -42,6 +42,6 @@
     "typescript": "^2.4.2"
   },
   "dependencies": {
-    "wiki-entity": "^0.1.3"
+    "wiki-entity": "^0.2.3"
   }
 }

@@ -158,14 +158,16 @@ describe('EntityBuilder', function () {
             });
     });
 
-    it('Scotland', function () {
+    it('Scotland & categories', function () {
         const lang = 'en';
-        return wikiEntity.getEntities({ language: lang, ids: 'Q22', claims: 'node', types: true })
+        return wikiEntity.getEntities({ language: lang, ids: 'Q22', claims: 'node', types: true, categories: true })
             .then(function (entities) {
+                console.log(entities[0].categories);
                 assert.equal(1, entities.length);
                 const entity = fromWikiEntity(entities[0], lang);
                 assert.equal('Scotland', entity.name);
                 assert.equal('L', entity.type);
+                assert.ok(entities[0].categories.length);
             });
     });
 });

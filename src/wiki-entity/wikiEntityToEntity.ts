@@ -39,14 +39,9 @@ export function wikiEntityToEntity(wikiEntity: WikiEntity, lang: string, options
         entity.rank += (Object.keys(wikiEntity.sitelinks).length * 5);
     }
 
-    entity.aliases = wikiEntity.aliases || [];
-    entity.aliases = entity.aliases.concat(wikiEntity.redirects || []);
-    if (entity.aliases.length) {
-        // entity.aliases = _.uniqBy(entity.aliases, al => atonic(al.toLowerCase()));
-        entity.rank += entity.aliases.length;
-    }
-
-    entity.aliases = uniq(entity.aliases);
+    entity.aliases = createAliases(wikiEntity);
+    entity.rank += entity.aliases.length;
+    entity.categories = createCategories(wikiEntity);
 
     if (wikiEntity.claims) {
         const ids = Object.keys(wikiEntity.claims);
@@ -72,4 +67,15 @@ export function wikiEntityToEntity(wikiEntity: WikiEntity, lang: string, options
     entity.rank = Math.round(entity.rank);
 
     return entity;
+}
+
+function createAliases(entity: WikiEntity) {
+    let aliases = entity.aliases || [];
+    aliases = aliases.concat(entity.redirects || []);
+    return uniq(aliases);
+}
+
+function createCategories(entity: WikiEntity) {
+    let categories = entity.categories || [];
+    return uniq(categories);
 }
