@@ -71,7 +71,7 @@ export function wikiEntityToEntity(wikiEntity: WikiEntity, lang: string, options
 
 function createAliases(entity: WikiEntity) {
     let aliases = entity.aliases || [];
-    aliases = aliases.concat(entity.redirects || []);
+    // aliases = aliases.concat(entity.redirects || []);
     return uniq(aliases);
 }
 
