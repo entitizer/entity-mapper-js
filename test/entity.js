@@ -145,7 +145,7 @@ describe('EntityBuilder', function () {
         const lang = 'en';
         return wikiEntity.getEntities({ language: lang, ids: 'Q11215', claims: 'none', types: true })
             .then(function (entities) {
-                console.log(entities[0]);
+                // console.log(entities[0]);
                 assert.equal(1, entities.length);
                 const entity = fromWikiEntity(entities[0], lang);
                 assert.equal('Windows 7', entity.name);

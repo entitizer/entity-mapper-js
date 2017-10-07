@@ -45,7 +45,7 @@ class QueryData {
         if (ids) {
             return Promise.resolve(ids);
         }
-        return Promise.delay(1000 * 0.2)
+        return Promise.delay(1000 * 0.02)
             .then(() => new Promise((resolve, reject) => {
                 request({
                     url: 'https://query.wikidata.org/bigdata/namespace/wdq/sparql',
@@ -120,7 +120,6 @@ function exploreIds(ids, deep, mainList, loopCount) {
             }
             return unique(lists[0]);
         })
-        .delay(1000 * 2)
         .then(function (list) {
             return exploreIds(list, deep, mainList.concat(list), 1 + loopCount);
         });
