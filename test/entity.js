@@ -109,7 +109,7 @@ describe('EntityBuilder', function () {
 
     it('fromWikiEntity Facebook Organisation data', function () {
         const lang = 'en';
-        return wikiEntity.getEntities({ language: lang, ids: 'Q380', claims: 'all', types: true })
+        return wikiEntity.getEntities({ language: lang, ids: 'Q380', claims: 'none', types: true })
             .then(function (entities) {
                 assert.equal(1, entities.length);
                 const entity = fromWikiEntity(entities[0], lang);
@@ -126,7 +126,7 @@ describe('EntityBuilder', function () {
 
     it('fromWikiEntity Euro 2016 Event data', function () {
         const lang = 'en';
-        return wikiEntity.getEntities({ language: lang, ids: 'Q189571', claims: 'all', types: true })
+        return wikiEntity.getEntities({ language: lang, ids: 'Q189571', claims: 'none', types: true })
             .then(function (entities) {
                 assert.equal(1, entities.length);
                 const entity = fromWikiEntity(entities[0], lang);
@@ -143,8 +143,9 @@ describe('EntityBuilder', function () {
 
     it('fromWikiEntity Windows 7 Product data', function () {
         const lang = 'en';
-        return wikiEntity.getEntities({ language: lang, ids: 'Q11215', claims: 'all', types: true })
+        return wikiEntity.getEntities({ language: lang, ids: 'Q11215', claims: 'none', types: true })
             .then(function (entities) {
+                console.log(entities[0]);
                 assert.equal(1, entities.length);
                 const entity = fromWikiEntity(entities[0], lang);
                 assert.equal('Windows 7', entity.name);

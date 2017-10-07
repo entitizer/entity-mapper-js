@@ -6,6 +6,84 @@ const Promise = require('bluebird');
 const fs = require('fs');
 const path = require('path');
 
+class QueryData {
+    constructor() {
+        this.CACHE = {}
+    }
+
+    formatFileName(id) {
+        return path.join(__dirname, '../data/P279/' + id + '.json');
+    }
+
+    getCacheIds(id) {
+        if (this.CACHE[id]) {
+            debug('ids from CACHE');
+            return this.CACHE[id];
+        }
+        const file = this.formatFileName(id);
+        try {
+            const stats = fs.statSync(file);
+            // is expired:
+            if (stats.ctimeMs < Date.now() - 1000 * 60 * 60 * 24 * 14) {
+                debug('file cache is expired');
+                return null;
+            }
+            debug('ids from file');
+            return this.CACHE[id] = JSON.parse(fs.readFileSync(file, 'utf8'));
+        } catch (e) {
+            debug('error ' + e.message);
+            return null;
+        }
+    }
+
+    setCacheIds(id, ids) {
+        fs.writeFileSync(this.formatFileName(id), JSON.stringify(ids), 'utf8');
+    }
+
+    query(id) {
+        let ids = this.getCacheIds(id);
+        if (ids) {
+            return Promise.resolve(ids);
+        }
+        return Promise.delay(1000 * 0.2)
+            .then(() => new Promise((resolve, reject) => {
+                request({
+                    url: 'https://query.wikidata.org/bigdata/namespace/wdq/sparql',
+                    method: 'GET',
+                    qs: {
+                        query: `SELECT DISTINCT ?item ?itemLabel
+    WHERE
+    {
+        ?item wdt:P279 wd:${id} .
+        SERVICE wikibase:label {
+            bd:serviceParam wikibase:language "en,de,fr,ru,es" 
+        }
+    }
+    ORDER BY ?item
+    limit 1000`
+                    },
+                    json: true
+                }, (error, response, json) => {
+                    if (error) {
+                        return reject(error);
+                    }
+                    if (!json.results || !json.results.bindings || !json.results.bindings.length) {
+                        // console.log('result is null', json);
+                        return resolve([]);
+                    }
+
+                    const ids = json.results.bindings.filter(it => it.itemLabel && it.itemLabel['xml:lang'] && it.itemLabel.value)
+                        .map(it => it.item.value.substr(it.item.value.indexOf('/entity/') + 8));
+                    // ids.unshift(id);
+                    this.setCacheIds(id, ids);
+                    resolve(ids);
+                });
+            }));
+    }
+}
+
+const queryData = new QueryData();
+
 const DATA_MAP = {
     // Events: Event, 
     E: { list: ['Q1656682', 'Q1190554'], deep: 3 },
@@ -32,22 +110,19 @@ function exploreIds(ids, deep, mainList, loopCount) {
     loopCount = loopCount || 0;
 
     if (ids.length === 0 || loopCount === deep) {
-        return mainList.filter(function (item, pos, self) {
-            return self.indexOf(item) === pos;
-        });
+        return unique(mainList);
     }
 
-    return Promise.map(ids, query, { concurrency: 5 })
+    return Promise.map(ids, (id) => queryData.query(id), { concurrency: 1 })
         .then(function (lists) {
             for (var i = 1; i < lists.length; i++) {
                 lists[0] = lists[0].concat(lists[i]);
             }
             return unique(lists[0]);
         })
-        .delay(1000 * 1)
+        .delay(1000 * 2)
         .then(function (list) {
-            mainList = mainList.concat(list);
-            return exploreIds(list, deep, mainList, 1 + loopCount);
+            return exploreIds(list, deep, mainList.concat(list), 1 + loopCount);
         });
 }
 
@@ -74,41 +149,6 @@ function saveResult(result) {
 
 function run() {
     return buildResult().then(saveResult);
-}
-
-function query(id) {
-    return new Promise(function (resolve, reject) {
-        request({
-            url: 'https://query.wikidata.org/bigdata/namespace/wdq/sparql',
-            method: 'GET',
-            qs: {
-                query: `SELECT DISTINCT ?item ?itemLabel
-WHERE
-{
-	?item wdt:P279 wd:${id} .
-    SERVICE wikibase:label {
-		bd:serviceParam wikibase:language "en,de,fr,ru,es" 
-	}
-}
-ORDER BY ?item
-limit 1000`
-            },
-            json: true
-        }, function (error, response, json) {
-            if (error) {
-                return reject(error);
-            }
-            if (!json.results || !json.results.bindings || !json.results.bindings.length) {
-                // console.log('result is null', json);
-                return resolve([]);
-            }
-
-            const ids = json.results.bindings.filter(it => it.itemLabel && it.itemLabel['xml:lang'] && it.itemLabel.value)
-                .map(it => it.item.value.substr(it.item.value.indexOf('/entity/') + 8));
-            // ids.unshift(id);
-            resolve(ids);
-        });
-    });
 }
 
 run()
