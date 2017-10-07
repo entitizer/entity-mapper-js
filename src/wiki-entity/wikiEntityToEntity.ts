@@ -4,6 +4,7 @@ import { WikiEntity, WikidataPropertyValue } from 'wiki-entity';
 import { Entity, EntityType } from 'entitizer.entities';
 import { getEntityType } from './getEntityType';
 import { getEntityType as getEntityInstanceType } from './getEntityInstanceType';
+import { getEntityTypeByExtract } from './getEntityTypeByExtract';
 import { getEntityData } from './getEntityData';
 import { getEntityCC2 } from './getEntityCountry';
 import { uniq } from '../utils';
@@ -18,21 +19,24 @@ export function wikiEntityToEntity(wikiEntity: WikiEntity, lang: string, options
     const entity: Entity = {};
     entity.lang = lang.toLowerCase();
     entity.wikiId = wikiEntity.id;
-    entity.type = getEntityType(wikiEntity);
-    if (!entity.type) {
-        entity.type = getEntityInstanceType(wikiEntity);
-        if (!entity.type && options.defaultType) {
-            entity.type = options.defaultType;
-        }
-    }
-    if (wikiEntity.types) {
-        entity.types = uniq(wikiEntity.types.filter(item => !/:(Thing|Agent)$/.test(item)));
-        // entity.types = uniq(entity.types.map(type => type.split(':')[1]));
-    }
     entity.name = wikiEntity.label;
     entity.description = wikiEntity.description;
     entity.wikiPageId = wikiEntity.pageid;
     entity.extract = wikiEntity.extract;
+    if (wikiEntity.types) {
+        entity.types = uniq(wikiEntity.types.filter(item => !/:(Thing|Agent)$/.test(item)));
+    }
+    entity.type = getEntityType(wikiEntity);
+    if (!entity.type) {
+        entity.type = getEntityInstanceType(wikiEntity);
+        if (!entity.type && entity.extract && !entity.types) {
+            entity.type = getEntityTypeByExtract(entity.extract, lang);
+        }
+        if (!entity.type && options.defaultType) {
+            entity.type = options.defaultType;
+        }
+    }
+
     entity.rank = 1;
     if (wikiEntity.sitelinks) {
         entity.wikiTitle = wikiEntity.sitelinks[lang];
@@ -46,14 +50,6 @@ export function wikiEntityToEntity(wikiEntity: WikiEntity, lang: string, options
     if (wikiEntity.claims) {
         const ids = Object.keys(wikiEntity.claims);
         if (ids.length) {
-            // detect wikiImage
-            // for (var i = 0; i < ids.length; i++) {
-            //     const img: WikidataPropertyValue = _.find(wikiEntity.claims[ids[i]].values, { datatype: 'commonsMedia' });
-            //     if (img) {
-            //         entity.wikiImage = img.value;
-            //         break;
-            //     }
-            // }
             entity.data = getEntityData(wikiEntity);
         }
 

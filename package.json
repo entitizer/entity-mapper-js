@@ -44,6 +44,6 @@
   },
   "dependencies": {
     "entitizer.entities": "^0.1.0",
-    "wiki-entity": "^0.2.3"
+    "wiki-entity": "^0.2.5"
   }
 }
