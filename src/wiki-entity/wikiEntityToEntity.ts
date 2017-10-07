@@ -1,6 +1,6 @@
 
 // const debug = require('debug')('models-builder');
-import { WikiEntity, WikidataPropertyValue } from 'wiki-entity';
+import { WikiEntity } from 'wiki-entity';
 import { Entity, EntityType } from 'entitizer.entities';
 import { getEntityType } from './getEntityType';
 import { getEntityType as getEntityInstanceType } from './getEntityInstanceType';

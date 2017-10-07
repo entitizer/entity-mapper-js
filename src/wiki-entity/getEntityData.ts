@@ -1,7 +1,6 @@
 
 import { WikiEntity } from 'wiki-entity';
-import { Entity, EntityType, EntityData } from 'entitizer.entities';
-import { PlainObject } from '../utils';
+import { EntityData } from 'entitizer.entities';
 
 export function getEntityData(wikiEntity: WikiEntity): EntityData {
     if (!wikiEntity.claims) {
