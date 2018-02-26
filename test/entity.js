@@ -4,8 +4,18 @@ const fromWikiEntity = require('../lib').fromWikiEntity;
 const Entity = require('entitizer.entities').Entity;
 const wikiEntity = require('wiki-entity');
 const assert = require('assert');
+const getEntityCC2 = require('../lib/wiki-entity/getEntityCountry').getEntityCC2
 
 describe('EntityBuilder', function () {
+    it('getEntityCountry', function () {
+        const lang = 'ro';
+        return wikiEntity.getEntities({ language: lang, ids: 'Q12729770', claims: 'item' })
+            .then(function (entities) {
+                assert.equal(1, entities.length);
+                const cc2 = getEntityCC2(entities[0]);
+                assert.equal(cc2, 'MD');
+            });
+    });
     it('fromWikiEntity en:simple', function () {
         const lang = 'en';
         return wikiEntity.getEntities({ language: lang, ids: 'Q18548924', claims: 'none', types: true })
@@ -65,9 +75,10 @@ describe('EntityBuilder', function () {
                 // human
                 assert.equal('Q5', entity.data.P31[0]);
                 // birth date
-                assert.equal('1429', entity.data.P569[0]);
+                assert.equal('1424', entity.data.P569[0]);
+                // console.log(entity.cc2)
                 // has english wiki title
-                assert.ok(!entity.cc2);
+                // assert.ok(!entity.cc2);
 
                 // console.log(entity.name, 'rank', entity.rank);
 

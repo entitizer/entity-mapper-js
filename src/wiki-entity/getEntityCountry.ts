@@ -1,16 +1,15 @@
 
-import { EntityType } from 'entitizer.entities';
 import { WikiEntity, WikidataProperty } from 'wiki-entity';
 const countries = require('../../data/countries.json');
 
 // const TypesKeys = Object.keys(TYPES_MAP);
 
-export function getEntityCC2(wikiEntity: WikiEntity, type: EntityType): string {
-    if (!wikiEntity || !type) {
+export function getEntityCC2(wikiEntity: WikiEntity): string {
+    if (!wikiEntity) {
         return null;
     }
 
-    const countryIds = getEntityCountryIds(wikiEntity, type);
+    const countryIds = getEntityCountryIds(wikiEntity);
 
     for (var i = 0; i < countryIds.length; i++) {
         const id = countryIds[i];
@@ -22,22 +21,8 @@ export function getEntityCC2(wikiEntity: WikiEntity, type: EntityType): string {
     return null;
 }
 
-function getEntityCountryIds(wikiEntity: WikiEntity, type: EntityType): string[] {
-    let prop: WikidataProperty = wikiEntity.claims.P17;
-    switch (type) {
-        case EntityType.H:
-            // P27 - country of citizenship
-            prop = prop || wikiEntity.claims.P27;
-            break;
-        // case EntityTypes.LOCATION:
-        //     // P17 - country
-        //     prop = wikiEntity.claims.P17;
-        //     break;
-        // case EntityTypes.ORGANIZATION:
-        //     // P17 - country
-        //     prop = wikiEntity.claims.P17;
-        //     break;
-    }
+function getEntityCountryIds(wikiEntity: WikiEntity): string[] {
+    let prop: WikidataProperty = wikiEntity.claims.P17 || wikiEntity.claims.P27 || wikiEntity.claims.P495 || wikiEntity.claims.P1532;
 
     return prop && prop.values.map(item => item.value) || [];
 }

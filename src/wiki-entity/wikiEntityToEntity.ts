@@ -53,9 +53,7 @@ export function wikiEntityToEntity(wikiEntity: WikiEntity, lang: string, options
             entity.data = getEntityData(wikiEntity);
         }
 
-        if (entity.type) {
-            entity.cc2 = getEntityCC2(wikiEntity, entity.type);
-        }
+        entity.cc2 = getEntityCC2(wikiEntity);
 
         entity.rank += ids.length;
     }

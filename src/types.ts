@@ -49,6 +49,7 @@ export const ENTITY_PROPS = {
     placeOfDeath: 'P20',
     placeOfBirth: 'p19',
     country: 'P17',
+    countryOfOrigin: 'P495',
     capitalOf: 'P1376',
     locatedInAdmEntity: 'P131',
     coordinateLocation: 'P625',
