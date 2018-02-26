@@ -1,6 +1,6 @@
 {
   "name": "entitizer.entity-mapper",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Entitizer entity mapper",
   "main": "./lib/index.js",
   "types": "./types/index.d.ts",
