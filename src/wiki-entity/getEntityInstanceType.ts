@@ -14,7 +14,7 @@ export function getEntityType(wikiEntity: WikiEntity): EntityType {
         return type;
     }
 
-    return getTypeByProp(wikiEntity, 'P279');
+    // return getTypeByProp(wikiEntity, 'P279');
 }
 
 
