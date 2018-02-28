@@ -6,6 +6,9 @@ const Promise = require('bluebird');
 const fs = require('fs');
 const path = require('path');
 
+// process (Q3249551)
+const INVALID_IDS = ['Q3249551']
+
 class QueryData {
     constructor() {
         this.CACHE = {}
@@ -24,7 +27,8 @@ class QueryData {
         try {
             const stats = fs.statSync(file);
             // is expired:
-            if (stats.ctimeMs < Date.now() - 1000 * 60 * 60 * 24 * 14) {
+            const DAYS30 = 1000 * 86400
+            if (stats.ctimeMs < Date.now() - DAYS30) {
                 debug('file cache is expired');
                 return null;
             }
@@ -41,9 +45,12 @@ class QueryData {
     }
 
     query(id) {
+        if (~INVALID_IDS.indexOf(id)) {
+            return Promise.resolve([])
+        }
         let ids = this.getCacheIds(id);
         if (ids) {
-            return Promise.resolve(ids);
+            return Promise.resolve(filterInvalidIds(ids))
         }
         return Promise.delay(1000 * 0.02)
             .then(() => new Promise((resolve, reject) => {
@@ -69,11 +76,13 @@ class QueryData {
                     }
                     if (!json.results || !json.results.bindings || !json.results.bindings.length) {
                         // console.log('result is null', json);
+                        this.setCacheIds(id, []);
                         return resolve([]);
                     }
 
-                    const ids = json.results.bindings.filter(it => it.itemLabel && it.itemLabel['xml:lang'] && it.itemLabel.value)
-                        .map(it => it.item.value.substr(it.item.value.indexOf('/entity/') + 8));
+                    let ids = json.results.bindings.filter(it => it.itemLabel && it.itemLabel['xml:lang'] && it.itemLabel.value)
+                        .map(it => it.item.value.substr(it.item.value.indexOf('/entity/') + 8))
+                    ids = filterInvalidIds(ids)
                     // ids.unshift(id);
                     this.setCacheIds(id, ids);
                     resolve(ids);
@@ -85,8 +94,8 @@ class QueryData {
 const queryData = new QueryData();
 
 const DATA_MAP = {
-    // Events: Event, 
-    E: { list: ['Q1656682', 'Q1190554'], deep: 3 },
+    // Events: Event, Eveniment (Q1190554)??
+    E: { list: ['Q1656682'], deep: 3 },
     // Persons: Human
     H: { list: ['Q5'], deep: 3 },
     // Organizations: Organization (Q43229), TV chanel(Q2001305), radio chanel (Q28114677)
@@ -104,14 +113,20 @@ function unique(list) {
     });
 }
 
+function filterInvalidIds(ids) {
+    return ids.filter(id => INVALID_IDS.indexOf(id) < 0)
+}
+
 function exploreIds(ids, deep, mainList, loopCount) {
     debug('eploring ids:', ids);
-    mainList = mainList || [];
+    mainList = filterInvalidIds(mainList || []);
     loopCount = loopCount || 0;
 
     if (ids.length === 0 || loopCount === deep) {
         return unique(mainList);
     }
+
+    ids = filterInvalidIds(ids)
 
     return Promise.map(ids, (id) => queryData.query(id), { concurrency: 1 })
         .then(function (lists) {
@@ -171,24 +186,24 @@ function saveResult(result) {
     return Promise.resolve();
 }
 
-return addResults()
-    .then(function () {
-        console.log('OK');
-    })
-    .catch(function (error) {
-        console.error(error);
-    });
-
-function run() {
-    return buildResult().then(saveResult);
-}
-
-// run()
+// return addResults()
 //     .then(function () {
 //         console.log('OK');
 //     })
 //     .catch(function (error) {
 //         console.error(error);
 //     });
+
+function run() {
+    return buildResult().then(saveResult);
+}
+
+run()
+    .then(function () {
+        console.log('OK');
+    })
+    .catch(function (error) {
+        console.error(error);
+    });
 
 

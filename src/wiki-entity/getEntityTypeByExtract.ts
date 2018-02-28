@@ -9,7 +9,7 @@ const MAP: PlainObject<InfoRegType[]> = {
         { reg: /\beste un (sat|oraș|județ|raion)\b/i, type: EntityType.L },
         { reg: /\beste o (comună|biserică|mănăstire)\b/i, type: EntityType.L },
         { reg: /\beste o (organizație)\b/i, type: EntityType.O },
-        { reg: /\beste un (show)\b/i, type: EntityType.O },
+        // { reg: /\beste un (show)\b/i, type: EntityType.O },
         { reg: /\beste un (om|scriitor|poet|cercetător|politician|businessman|cântăreț|muzician)\b/i, type: EntityType.H },
         { reg: /\beste o (scriitoare|poetă|cercetătoare|politiciană|cântăreață)\b/i, type: EntityType.H }
     ]
